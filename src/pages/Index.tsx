@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, BarChart, Target, CreditCard, TrendingUp, Settings } from "lucide-react";
 import TransactionsPanel from "@/components/TransactionsPanel";
+import BudgetsPanel from "@/components/BudgetsPanel";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("transactions");
@@ -45,10 +46,7 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="budgets">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold">Budgets</h2>
-              <p className="text-gray-500">Cette fonctionnalité sera bientôt disponible.</p>
-            </Card>
+            <BudgetsPanel />
           </TabsContent>
           
           <TabsContent value="objectives">
