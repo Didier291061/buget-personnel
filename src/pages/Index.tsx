@@ -5,6 +5,7 @@ import { DollarSign, BarChart, Target, CreditCard, TrendingUp, Settings } from "
 import TransactionsPanel from "@/components/TransactionsPanel";
 import BudgetsPanel from "@/components/BudgetsPanel";
 import ObjectivesPanel from "@/components/ObjectivesPanel";
+import InvestmentsPanel from "@/components/InvestmentsPanel";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("transactions");
@@ -54,16 +55,13 @@ const Index = () => {
             <ObjectivesPanel />
           </TabsContent>
           
+          <TabsContent value="investments">
+            <InvestmentsPanel />
+          </TabsContent>
+          
           <TabsContent value="credit">
             <Card className="p-6">
               <h2 className="text-2xl font-semibold">Score de Crédit</h2>
-              <p className="text-gray-500">Cette fonctionnalité sera bientôt disponible.</p>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="investments">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold">Investissements</h2>
               <p className="text-gray-500">Cette fonctionnalité sera bientôt disponible.</p>
             </Card>
           </TabsContent>
