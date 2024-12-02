@@ -6,6 +6,7 @@ import TransactionsPanel from "@/components/TransactionsPanel";
 import BudgetsPanel from "@/components/BudgetsPanel";
 import ObjectivesPanel from "@/components/ObjectivesPanel";
 import InvestmentsPanel from "@/components/InvestmentsPanel";
+import SettingsPanel from "@/components/settings/SettingsPanel";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("transactions");
@@ -67,10 +68,7 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="settings">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold">Paramètres</h2>
-              <p className="text-gray-500">Cette fonctionnalité sera bientôt disponible.</p>
-            </Card>
+            <SettingsPanel />
           </TabsContent>
         </Tabs>
       </div>
