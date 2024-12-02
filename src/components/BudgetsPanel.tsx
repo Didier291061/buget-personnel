@@ -15,6 +15,14 @@ import { ChartContainer } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { AlertCircle, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { BudgetCategoryManager, defaultBudgetCategories } from "./budgets/BudgetCategoryManager";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface Budget {
   id: number;
@@ -45,6 +53,27 @@ const BudgetsPanel = () => {
       montantDepense: 250,
     },
   ]);
+
+  const [newBudget, setNewBudget] = useState({
+    categorie: defaultBudgetCategories[0].name,
+    montantPrevu: 0
+  });
+
+  const addBudget = () => {
+    if (newBudget.montantPrevu > 0) {
+      const newId = Math.max(...budgets.map(b => b.id)) + 1;
+      setBudgets([...budgets, {
+        id: newId,
+        categorie: newBudget.categorie,
+        montantPrevu: newBudget.montantPrevu,
+        montantDepense: 0
+      }]);
+      toast({
+        title: "Budget ajouté",
+        description: `Un nouveau budget de ${newBudget.montantPrevu}€ a été créé pour la catégorie ${newBudget.categorie}.`
+      });
+    }
+  };
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -103,12 +132,48 @@ const BudgetsPanel = () => {
         </Card>
       </div>
 
+      <BudgetCategoryManager />
+
       <Card className="p-4">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold">Suivi des Budgets</h3>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Nouveau Budget
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> Nouveau Budget
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ajouter un nouveau budget</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Catégorie</label>
+                  <select 
+                    className="w-full p-2 border rounded-md"
+                    value={newBudget.categorie}
+                    onChange={(e) => setNewBudget({...newBudget, categorie: e.target.value})}
+                  >
+                    {defaultBudgetCategories.map((cat) => (
+                      <option key={cat.id} value={cat.name}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Montant prévu</label>
+                  <Input 
+                    type="number"
+                    value={newBudget.montantPrevu}
+                    onChange={(e) => setNewBudget({...newBudget, montantPrevu: parseFloat(e.target.value)})}
+                  />
+                </div>
+                <Button onClick={addBudget} className="w-full">
+                  Ajouter le budget
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="rounded-md border">
