@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { TrendingUp, AlertTriangle, PieChart } from "lucide-react";
+import { TrendingUp, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { InvestmentStats } from "./investments/InvestmentStats";
+import { PerformanceChart } from "./investments/PerformanceChart";
+import { CategoryManager } from "./investments/CategoryManager";
 
 interface Investment {
   id: number;
@@ -14,15 +16,6 @@ interface Investment {
   rendement: number;
   type: string;
 }
-
-const performanceData = [
-  { mois: "Jan", valeur: 10000 },
-  { mois: "Fév", valeur: 11200 },
-  { mois: "Mar", valeur: 10800 },
-  { mois: "Avr", valeur: 12000 },
-  { mois: "Mai", valeur: 12500 },
-  { mois: "Juin", valeur: 13000 },
-];
 
 const InvestmentsPanel = () => {
   const [investments, setInvestments] = useState<Investment[]>([
@@ -54,87 +47,10 @@ const InvestmentsPanel = () => {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="rounded-full bg-green-100 p-3">
-              <TrendingUp className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Valeur Totale</p>
-              <h3 className="text-2xl font-bold">
-                {investments
-                  .reduce((acc, inv) => acc + inv.valeurActuelle, 0)
-                  .toLocaleString("fr-FR", {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-              </h3>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="rounded-full bg-blue-100 p-3">
-              <PieChart className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Rendement Moyen</p>
-              <h3 className="text-2xl font-bold">
-                {(
-                  investments.reduce((acc, inv) => acc + inv.rendement, 0) /
-                  investments.length
-                ).toFixed(1)}
-                %
-              </h3>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="rounded-full bg-yellow-100 p-3">
-              <AlertTriangle className="h-6 w-6 text-yellow-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Plus-value Latente</p>
-              <h3 className="text-2xl font-bold">
-                {(
-                  investments.reduce(
-                    (acc, inv) => acc + (inv.valeurActuelle - inv.montantInvesti),
-                    0
-                  )
-                ).toLocaleString("fr-FR", {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </h3>
-            </div>
-          </div>
-        </Card>
-      </div>
+      <InvestmentStats investments={investments} />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-4">
-          <h3 className="mb-4 text-lg font-semibold">Performance du Portefeuille</h3>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mois" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="valeur"
-                  stroke="#8884d8"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <PerformanceChart />
 
         <Card className="p-4">
           <h3 className="mb-4 text-lg font-semibold">Alertes et Opportunités</h3>
@@ -164,6 +80,8 @@ const InvestmentsPanel = () => {
           </div>
         </Card>
       </div>
+
+      <CategoryManager />
 
       <Card className="p-4">
         <div className="mb-4 flex items-center justify-between">
