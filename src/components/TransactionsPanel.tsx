@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { DollarSign, Filter, Import, Plus } from "lucide-react";
+import { DollarSign, Filter, Import, Plus, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,35 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
-
-interface Transaction {
-  id: number;
-  date: string;
-  description: string;
-  montant: number;
-  categorie: string;
-}
+import { useTransactions } from "@/hooks/useTransactions";
 
 const TransactionsPanel = () => {
-  const { toast } = useToast();
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 1,
-      date: "2024-02-20",
-      description: "Courses Supermarché",
-      montant: -85.50,
-      categorie: "Alimentation"
-    },
-    {
-      id: 2,
-      date: "2024-02-19",
-      description: "Salaire",
-      montant: 2500,
-      categorie: "Revenu"
-    }
-  ]);
-
+  const { transactions, addTransaction, removeTransaction } = useTransactions();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState({
     date: new Date().toISOString().split('T')[0],
     description: "",
@@ -47,16 +23,15 @@ const TransactionsPanel = () => {
     categorie: "Alimentation"
   });
 
-  const addTransaction = () => {
+  const handleAddTransaction = () => {
     if (newTransaction.description && newTransaction.montant !== 0) {
-      const newId = Math.max(...transactions.map(t => t.id)) + 1;
-      setTransactions([...transactions, {
-        id: newId,
-        ...newTransaction
-      }]);
-      toast({
-        title: "Transaction ajoutée",
-        description: `La transaction "${newTransaction.description}" a été ajoutée avec succès.`
+      addTransaction(newTransaction);
+      setIsDialogOpen(false);
+      setNewTransaction({
+        date: new Date().toISOString().split('T')[0],
+        description: "",
+        montant: 0,
+        categorie: "Alimentation"
       });
     }
   };
@@ -96,7 +71,7 @@ const TransactionsPanel = () => {
               <Import className="h-4 w-4" />
             </Button>
           </div>
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" /> Nouvelle Transaction
@@ -143,7 +118,7 @@ const TransactionsPanel = () => {
                     <option value="Revenu">Revenu</option>
                   </select>
                 </div>
-                <Button onClick={addTransaction} className="w-full">
+                <Button onClick={handleAddTransaction} className="w-full">
                   Ajouter la transaction
                 </Button>
               </div>
@@ -159,6 +134,7 @@ const TransactionsPanel = () => {
                 <TableHead>Description</TableHead>
                 <TableHead>Catégorie</TableHead>
                 <TableHead className="text-right">Montant</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -174,6 +150,16 @@ const TransactionsPanel = () => {
                       style: "currency",
                       currency: "EUR"
                     })}
+                  </TableCell>
+                  <TableCell>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => removeTransaction(transaction.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
