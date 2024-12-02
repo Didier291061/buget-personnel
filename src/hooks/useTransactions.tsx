@@ -18,12 +18,13 @@ export const useTransactions = () => {
 
   useEffect(() => {
     localStorage.setItem('transactions', JSON.stringify(transactions));
+    console.log('Transactions mises à jour:', transactions);
   }, [transactions]);
 
   const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
     const newId = transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1;
     const newTransaction = { ...transaction, id: newId };
-    setTransactions([...transactions, newTransaction]);
+    setTransactions(prev => [...prev, newTransaction]);
     toast({
       title: "Transaction ajoutée",
       description: `La transaction "${transaction.description}" a été ajoutée avec succès.`
@@ -32,16 +33,35 @@ export const useTransactions = () => {
   };
 
   const removeTransaction = (id: number) => {
-    setTransactions(transactions.filter(t => t.id !== id));
+    const transactionToRemove = transactions.find(t => t.id === id);
+    if (transactionToRemove) {
+      setTransactions(prev => prev.filter(t => t.id !== id));
+      toast({
+        title: "Transaction supprimée",
+        description: `La transaction "${transactionToRemove.description}" a été supprimée.`
+      });
+    }
+  };
+
+  const updateTransaction = (id: number, updatedTransaction: Partial<Omit<Transaction, 'id'>>) => {
+    setTransactions(prev => prev.map(t => 
+      t.id === id ? { ...t, ...updatedTransaction } : t
+    ));
     toast({
-      title: "Transaction annulée",
-      description: "La transaction a été supprimée avec succès."
+      title: "Transaction mise à jour",
+      description: "La transaction a été mise à jour avec succès."
     });
+  };
+
+  const getTransactionsByCategory = (category: string) => {
+    return transactions.filter(t => t.categorie === category);
   };
 
   return {
     transactions,
     addTransaction,
-    removeTransaction
+    removeTransaction,
+    updateTransaction,
+    getTransactionsByCategory
   };
 };
