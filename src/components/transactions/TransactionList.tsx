@@ -16,6 +16,7 @@ export const TransactionList = ({ transactions, onDeleteTransaction }: Transacti
           <TableRow>
             <TableHead>Date</TableHead>
             <TableHead>Description</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Catégorie</TableHead>
             <TableHead className="text-right">Montant</TableHead>
             <TableHead>Actions</TableHead>
@@ -26,11 +27,16 @@ export const TransactionList = ({ transactions, onDeleteTransaction }: Transacti
             <TableRow key={transaction.id}>
               <TableCell>{transaction.date}</TableCell>
               <TableCell>{transaction.description}</TableCell>
+              <TableCell>
+                <span className={transaction.montant >= 0 ? "text-green-600" : "text-red-600"}>
+                  {transaction.montant >= 0 ? "Revenu" : "Dépense"}
+                </span>
+              </TableCell>
               <TableCell>{transaction.categorie}</TableCell>
-              <TableCell className={`text-right ${
+              <TableCell className={`text-right font-medium ${
                 transaction.montant >= 0 ? "text-green-600" : "text-red-600"
               }`}>
-                {transaction.montant.toLocaleString("fr-FR", {
+                {Math.abs(transaction.montant).toLocaleString("fr-FR", {
                   style: "currency",
                   currency: "EUR"
                 })}

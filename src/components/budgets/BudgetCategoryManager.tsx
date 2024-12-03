@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,8 +20,16 @@ export const defaultBudgetCategories: BudgetCategory[] = [
 
 export const BudgetCategoryManager = () => {
   const { toast } = useToast();
-  const [categories, setCategories] = useState<BudgetCategory[]>(defaultBudgetCategories);
+  const [categories, setCategories] = useState<BudgetCategory[]>(() => {
+    const saved = localStorage.getItem('budgetCategories');
+    return saved ? JSON.parse(saved) : defaultBudgetCategories;
+  });
   const [newCategory, setNewCategory] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem('budgetCategories', JSON.stringify(categories));
+    console.log('Categories mises à jour:', categories);
+  }, [categories]);
 
   const addCategory = () => {
     if (newCategory.trim()) {

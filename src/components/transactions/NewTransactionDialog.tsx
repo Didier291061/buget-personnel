@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useBudgetCategories } from "@/hooks/useBudgetCategories";
 
 interface NewTransactionDialogProps {
   isOpen: boolean;
@@ -21,22 +22,34 @@ export const NewTransactionDialog = ({
   onAddTransaction,
   credits
 }: NewTransactionDialogProps) => {
+  const { categories } = useBudgetCategories();
   const [newTransaction, setNewTransaction] = useState({
     date: new Date().toISOString().split('T')[0],
     description: "",
     montant: 0,
-    categorie: "Alimentation",
+    type: "depense", // nouveau champ pour le type
+    categorie: categories[0]?.name || "Alimentation",
     creditId: ""
   });
 
   const handleSubmit = () => {
     if (newTransaction.description && newTransaction.montant !== 0) {
-      onAddTransaction(newTransaction);
+      // Ajuster le montant en fonction du type
+      const montantFinal = newTransaction.type === "revenu" 
+        ? Math.abs(newTransaction.montant) 
+        : -Math.abs(newTransaction.montant);
+
+      onAddTransaction({
+        ...newTransaction,
+        montant: montantFinal
+      });
+      
       setNewTransaction({
         date: new Date().toISOString().split('T')[0],
         description: "",
         montant: 0,
-        categorie: "Alimentation",
+        type: "depense",
+        categorie: categories[0]?.name || "Alimentation",
         creditId: ""
       });
     }
@@ -65,10 +78,21 @@ export const NewTransactionDialog = ({
             />
           </div>
           <div className="space-y-2">
+            <label className="text-sm font-medium">Type de transaction</label>
+            <select 
+              className="w-full p-2 border rounded-md"
+              value={newTransaction.type}
+              onChange={(e) => setNewTransaction({...newTransaction, type: e.target.value})}
+            >
+              <option value="depense">Dépense</option>
+              <option value="revenu">Revenu</option>
+            </select>
+          </div>
+          <div className="space-y-2">
             <label className="text-sm font-medium">Montant</label>
             <Input 
               type="number"
-              value={newTransaction.montant}
+              value={Math.abs(newTransaction.montant)}
               onChange={(e) => setNewTransaction({...newTransaction, montant: parseFloat(e.target.value)})}
             />
           </div>
@@ -79,22 +103,20 @@ export const NewTransactionDialog = ({
               value={newTransaction.categorie}
               onChange={(e) => setNewTransaction({...newTransaction, categorie: e.target.value})}
             >
-              <option value="Alimentation">Alimentation</option>
-              <option value="Transport">Transport</option>
-              <option value="Loisirs">Loisirs</option>
-              <option value="Revenu">Revenu</option>
-              <option value="Crédit">Crédit</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>{cat.name}</option>
+              ))}
             </select>
           </div>
-          {newTransaction.categorie === "Crédit" && (
+          {newTransaction.type === "depense" && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Crédit associé</label>
+              <label className="text-sm font-medium">Crédit associé (optionnel)</label>
               <select 
                 className="w-full p-2 border rounded-md"
                 value={newTransaction.creditId}
                 onChange={(e) => setNewTransaction({...newTransaction, creditId: e.target.value})}
               >
-                <option value="">Sélectionner un crédit</option>
+                <option value="">Aucun crédit</option>
                 {credits.map((credit) => (
                   <option key={credit.id} value={credit.id}>
                     {credit.nom}
