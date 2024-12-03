@@ -6,6 +6,7 @@ import TransactionsPanel from "@/components/TransactionsPanel";
 import BudgetsPanel from "@/components/BudgetsPanel";
 import ObjectivesPanel from "@/components/ObjectivesPanel";
 import InvestmentsPanel from "@/components/InvestmentsPanel";
+import CreditPanel from "@/components/CreditPanel";
 import SettingsPanel from "@/components/settings/SettingsPanel";
 
 const Index = () => {
@@ -56,15 +57,12 @@ const Index = () => {
             <ObjectivesPanel />
           </TabsContent>
           
-          <TabsContent value="investments">
-            <InvestmentsPanel />
+          <TabsContent value="credit">
+            <CreditPanel />
           </TabsContent>
           
-          <TabsContent value="credit">
-            <Card className="p-6">
-              <h2 className="text-2xl font-semibold">Score de Crédit</h2>
-              <p className="text-gray-500">Cette fonctionnalité sera bientôt disponible.</p>
-            </Card>
+          <TabsContent value="investments">
+            <InvestmentsPanel />
           </TabsContent>
           
           <TabsContent value="settings">
