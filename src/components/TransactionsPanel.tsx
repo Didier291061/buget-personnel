@@ -12,26 +12,41 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useTransactions } from "@/hooks/useTransactions";
+import { useCredits } from "@/hooks/useCredits";
 
 const TransactionsPanel = () => {
   const { transactions, addTransaction, removeTransaction } = useTransactions();
+  const { credits, updateCreditBalance } = useCredits();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newTransaction, setNewTransaction] = useState({
     date: new Date().toISOString().split('T')[0],
     description: "",
     montant: 0,
-    categorie: "Alimentation"
+    categorie: "Alimentation",
+    creditId: ""
   });
 
   const handleAddTransaction = () => {
     if (newTransaction.description && newTransaction.montant !== 0) {
-      addTransaction(newTransaction);
+      const transaction = addTransaction({
+        date: newTransaction.date,
+        description: newTransaction.description,
+        montant: newTransaction.montant,
+        categorie: newTransaction.categorie
+      });
+
+      // Si la transaction est liée à un crédit, mettre à jour le solde du crédit
+      if (newTransaction.creditId) {
+        updateCreditBalance(parseInt(newTransaction.creditId), newTransaction.montant);
+      }
+
       setIsDialogOpen(false);
       setNewTransaction({
         date: new Date().toISOString().split('T')[0],
         description: "",
         montant: 0,
-        categorie: "Alimentation"
+        categorie: "Alimentation",
+        creditId: ""
       });
     }
   };
@@ -116,8 +131,26 @@ const TransactionsPanel = () => {
                     <option value="Transport">Transport</option>
                     <option value="Loisirs">Loisirs</option>
                     <option value="Revenu">Revenu</option>
+                    <option value="Crédit">Crédit</option>
                   </select>
                 </div>
+                {newTransaction.categorie === "Crédit" && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Crédit associé</label>
+                    <select 
+                      className="w-full p-2 border rounded-md"
+                      value={newTransaction.creditId}
+                      onChange={(e) => setNewTransaction({...newTransaction, creditId: e.target.value})}
+                    >
+                      <option value="">Sélectionner un crédit</option>
+                      {credits.map((credit) => (
+                        <option key={credit.id} value={credit.id}>
+                          {credit.nom}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 <Button onClick={handleAddTransaction} className="w-full">
                   Ajouter la transaction
                 </Button>
