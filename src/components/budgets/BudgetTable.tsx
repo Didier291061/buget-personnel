@@ -7,6 +7,8 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface Budget {
   id: number;
@@ -17,9 +19,10 @@ interface Budget {
 
 interface BudgetTableProps {
   budgets: Budget[];
+  onDeleteBudget: (id: number) => void;
 }
 
-export const BudgetTable = ({ budgets }: BudgetTableProps) => {
+export const BudgetTable = ({ budgets, onDeleteBudget }: BudgetTableProps) => {
   return (
     <div className="rounded-md border">
       <Table>
@@ -29,6 +32,7 @@ export const BudgetTable = ({ budgets }: BudgetTableProps) => {
             <TableHead>Budget Prévu</TableHead>
             <TableHead>Dépensé</TableHead>
             <TableHead>Progression</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -60,6 +64,16 @@ export const BudgetTable = ({ budgets }: BudgetTableProps) => {
                     %
                   </span>
                 </div>
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDeleteBudget(budget.id)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
