@@ -6,6 +6,7 @@ import { TransactionSummary } from "./transactions/TransactionSummary";
 import { TransactionSearch } from "./transactions/TransactionSearch";
 import { TransactionList } from "./transactions/TransactionList";
 import { NewTransactionDialog } from "./transactions/NewTransactionDialog";
+import { TransactionTimeView } from "./transactions/TransactionTimeView";
 
 const TransactionsPanel = () => {
   const { transactions, addTransaction, removeTransaction } = useTransactions();
@@ -31,6 +32,8 @@ const TransactionsPanel = () => {
   return (
     <div className="space-y-4">
       <TransactionSummary />
+      
+      <TransactionTimeView />
 
       <Card className="p-4">
         <TransactionSearch 

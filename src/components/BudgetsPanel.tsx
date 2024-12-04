@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BudgetCategoryManager } from "./budgets/BudgetCategoryManager";
 import { BudgetChart } from "./budgets/BudgetChart";
 import { BudgetAlerts } from "./budgets/BudgetAlerts";
+import { BudgetAlertSettings } from "./budgets/BudgetAlertSettings";
 import { BudgetTable } from "./budgets/BudgetTable";
 import { useBudgetCategories } from "@/hooks/useBudgetCategories";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -86,7 +87,10 @@ const BudgetsPanel = () => {
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
         <BudgetChart data={pieData} />
-        <BudgetAlerts budgets={budgets} />
+        <div className="space-y-4">
+          <BudgetAlerts budgets={budgets} />
+          <BudgetAlertSettings />
+        </div>
       </div>
 
       <BudgetCategoryManager />
