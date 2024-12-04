@@ -7,6 +7,7 @@ export interface Transaction {
   description: string;
   montant: number;
   categorie: string;
+  creditId?: string;  // Ajout de la propriété creditId comme optionnelle
 }
 
 export const useTransactions = () => {
