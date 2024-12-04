@@ -1,7 +1,7 @@
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface Investment {
   id: number;
@@ -15,9 +15,10 @@ interface Investment {
 interface InvestmentListProps {
   investments: Investment[];
   onDeleteInvestment: (id: number) => void;
+  onEditInvestment: (investment: Investment) => void;
 }
 
-export const InvestmentList = ({ investments, onDeleteInvestment }: InvestmentListProps) => {
+export const InvestmentList = ({ investments, onDeleteInvestment, onEditInvestment }: InvestmentListProps) => {
   return (
     <div className="rounded-md border">
       <Table>
@@ -66,14 +67,24 @@ export const InvestmentList = ({ investments, onDeleteInvestment }: InvestmentLi
                 </div>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onDeleteInvestment(investment.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEditInvestment(investment)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDeleteInvestment(investment.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

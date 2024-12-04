@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { TrendingUp, AlertTriangle } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { InvestmentStats } from "./investments/InvestmentStats";
 import { PerformanceChart } from "./investments/PerformanceChart";
 import { CategoryManager } from "./investments/CategoryManager";
+import { InvestmentList } from "./investments/InvestmentList";
+import { EditInvestmentDialog } from "./investments/EditInvestmentDialog";
 import {
   Dialog,
   DialogContent,
@@ -61,6 +61,9 @@ const InvestmentsPanel = () => {
     type: "Actions"
   });
 
+  const [selectedInvestment, setSelectedInvestment] = useState<Investment | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const addInvestment = () => {
     if (newInvestment.nom && newInvestment.montantInvesti > 0) {
       const newId = Math.max(...investments.map(i => i.id)) + 1;
@@ -77,19 +80,44 @@ const InvestmentsPanel = () => {
     }
   };
 
+  const deleteInvestment = (id: number) => {
+    const investmentToDelete = investments.find(inv => inv.id === id);
+    if (investmentToDelete) {
+      setInvestments(investments.filter(inv => inv.id !== id));
+      toast({
+        title: "Investissement supprimé",
+        description: `L'investissement "${investmentToDelete.nom}" a été supprimé avec succès.`
+      });
+    }
+  };
+
+  const handleEditInvestment = (investment: Investment) => {
+    setSelectedInvestment(investment);
+    setIsEditDialogOpen(true);
+  };
+
+  const updateInvestment = (updatedInvestment: Investment) => {
+    setInvestments(investments.map(inv => 
+      inv.id === updatedInvestment.id ? updatedInvestment : inv
+    ));
+    toast({
+      title: "Investissement mis à jour",
+      description: `L'investissement "${updatedInvestment.nom}" a été mis à jour avec succès.`
+    });
+  };
+
   return (
     <div className="space-y-4">
       <InvestmentStats investments={investments} />
 
       <div className="grid gap-4 md:grid-cols-2">
         <PerformanceChart />
-
         <Card className="p-4">
           <h3 className="mb-4 text-lg font-semibold">Alertes et Opportunités</h3>
           <div className="space-y-4">
             <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                <TrendingUp className="h-5 w-5 text-yellow-600" />
                 <span className="font-medium text-yellow-800">
                   Rééquilibrage recommandé
                 </span>
@@ -166,57 +194,22 @@ const InvestmentsPanel = () => {
           </Dialog>
         </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nom</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Montant Investi</TableHead>
-                <TableHead>Valeur Actuelle</TableHead>
-                <TableHead>Performance</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {investments.map((investment) => (
-                <TableRow key={investment.id}>
-                  <TableCell className="font-medium">{investment.nom}</TableCell>
-                  <TableCell>{investment.type}</TableCell>
-                  <TableCell>
-                    {investment.montantInvesti.toLocaleString("fr-FR", {
-                      style: "currency",
-                      currency: "EUR",
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {investment.valeurActuelle.toLocaleString("fr-FR", {
-                      style: "currency",
-                      currency: "EUR",
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Progress
-                        value={investment.rendement}
-                        className="w-full"
-                      />
-                      <span
-                        className={`min-w-[3rem] text-sm ${
-                          investment.rendement >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {investment.rendement}%
-                      </span>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <InvestmentList 
+          investments={investments}
+          onDeleteInvestment={deleteInvestment}
+          onEditInvestment={handleEditInvestment}
+        />
       </Card>
+
+      <EditInvestmentDialog
+        investment={selectedInvestment}
+        isOpen={isEditDialogOpen}
+        onClose={() => {
+          setIsEditDialogOpen(false);
+          setSelectedInvestment(null);
+        }}
+        onUpdate={updateInvestment}
+      />
     </div>
   );
 };
