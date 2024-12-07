@@ -9,6 +9,144 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      credit_scores: {
+        Row: {
+          anciennete_bonus: number | null
+          created_at: string | null
+          diversite_bonus: number | null
+          historique_bonus: number | null
+          id: number
+          nouvelles_demandes_malus: number | null
+          score: number
+          updated_at: string | null
+          user_id: string
+          utilisation_bonus: number | null
+        }
+        Insert: {
+          anciennete_bonus?: number | null
+          created_at?: string | null
+          diversite_bonus?: number | null
+          historique_bonus?: number | null
+          id?: number
+          nouvelles_demandes_malus?: number | null
+          score: number
+          updated_at?: string | null
+          user_id: string
+          utilisation_bonus?: number | null
+        }
+        Update: {
+          anciennete_bonus?: number | null
+          created_at?: string | null
+          diversite_bonus?: number | null
+          historique_bonus?: number | null
+          id?: number
+          nouvelles_demandes_malus?: number | null
+          score?: number
+          updated_at?: string | null
+          user_id?: string
+          utilisation_bonus?: number | null
+        }
+        Relationships: []
+      }
+      credits: {
+        Row: {
+          created_at: string | null
+          date_debut: string
+          duree_en_mois: number
+          id: number
+          mensualite: number
+          montant_initial: number
+          nom: string
+          solde_restant: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date_debut: string
+          duree_en_mois: number
+          id?: number
+          mensualite: number
+          montant_initial: number
+          nom: string
+          solde_restant: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date_debut?: string
+          duree_en_mois?: number
+          id?: number
+          mensualite?: number
+          montant_initial?: number
+          nom?: string
+          solde_restant?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      objectives: {
+        Row: {
+          created_at: string | null
+          date_objectif: string
+          id: number
+          montant_actuel: number
+          montant_cible: number
+          nom: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date_objectif: string
+          id?: number
+          montant_actuel: number
+          montant_cible: number
+          nom: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date_objectif?: string
+          id?: number
+          montant_actuel?: number
+          montant_cible?: number
+          nom?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       "test lovable": {
         Row: {
           created_at: string
@@ -23,6 +161,50 @@ export type Database = {
           id?: number
         }
         Relationships: []
+      }
+      transactions: {
+        Row: {
+          categorie: string
+          created_at: string | null
+          credit_id: number | null
+          date: string
+          description: string
+          id: number
+          montant: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          categorie: string
+          created_at?: string | null
+          credit_id?: number | null
+          date: string
+          description: string
+          id?: number
+          montant: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          categorie?: string
+          created_at?: string | null
+          credit_id?: number | null
+          date?: string
+          description?: string
+          id?: number
+          montant?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_credit_id_fkey"
+            columns: ["credit_id"]
+            isOneToOne: false
+            referencedRelation: "credits"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
