@@ -22,7 +22,6 @@ export const useCredits = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Calcul du solde restant pour chaque crédit
   const calculateRemainingBalance = (credit: Credit) => {
     const creditTransactions = transactions.filter(t => t.creditId === credit.id.toString());
     const totalTransactions = creditTransactions.reduce((acc, curr) => acc + curr.montant, 0);
@@ -118,11 +117,9 @@ export const useCredits = () => {
 
     // Ancienneté des comptes (15% de l'impact)
     if (credits.length > 0) {
-      const plusAncienCredit = credits.reduce((acc, credit) => {
-        const dateCredit = new Date(credit.dateDebut);
-        return acc < dateCredit ? acc : dateCredit;
-      }, new Date());
-      const moisAnciennete = Math.floor((new Date() - plusAncienCredit) / (1000 * 60 * 60 * 24 * 30));
+      const plusAncienCredit = new Date(Math.min(...credits.map(credit => new Date(credit.dateDebut).getTime())));
+      const maintenant = new Date();
+      const moisAnciennete = Math.floor((maintenant.getTime() - plusAncienCredit.getTime()) / (1000 * 60 * 60 * 24 * 30));
       const bonusAnciennete = Math.min(15, Math.floor(moisAnciennete / 6));
       console.log("Bonus ancienneté:", bonusAnciennete);
       score += bonusAnciennete;
