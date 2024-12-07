@@ -1,43 +1,26 @@
 import { Card } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useCredits } from "@/hooks/useCredits";
-import { useEffect, useState } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const CreditHistory = () => {
-  const { calculateCreditScore } = useCredits();
-  const [historicalData, setHistoricalData] = useState(() => {
-    const saved = localStorage.getItem('creditScoreHistory');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { credits, creditScore } = useCredits();
 
-  useEffect(() => {
-    const currentScore = calculateCreditScore();
-    const newEntry = {
-      mois: new Date().toLocaleDateString('fr-FR', { month: 'short' }),
-      score: currentScore
-    };
-
-    const updatedHistory = [...historicalData, newEntry].slice(-6); // Garde les 6 derniers mois
-    setHistoricalData(updatedHistory);
-    localStorage.setItem('creditScoreHistory', JSON.stringify(updatedHistory));
-  }, [calculateCreditScore]);
+  const data = credits.map(credit => ({
+    name: credit.nom,
+    score: creditScore
+  }));
 
   return (
-    <Card className="p-6">
-      <h3 className="text-xl font-semibold mb-4">Historique du Score</h3>
+    <Card className="p-4">
+      <h3 className="text-lg font-semibold mb-4">Historique du Score</h3>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={historicalData}>
+          <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="mois" />
-            <YAxis domain={[650, 850]} />
+            <XAxis dataKey="name" />
+            <YAxis domain={[0, 1000]} />
             <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="score"
-              stroke="#8884d8"
-              strokeWidth={2}
-            />
+            <Line type="monotone" dataKey="score" stroke="#8884d8" />
           </LineChart>
         </ResponsiveContainer>
       </div>

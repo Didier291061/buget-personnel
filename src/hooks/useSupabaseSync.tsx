@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useCredits } from './useCredits';
-import { useTransactions } from './useTransactions';
-import { useObjectives } from './useObjectives';
+import { useCredits, Credit } from './useCredits';
+import { useTransactions, Transaction } from './useTransactions';
+import { useObjectives, Objective } from './useObjectives';
 
 export const useSupabaseSync = () => {
   const { toast } = useToast();
@@ -25,9 +25,15 @@ export const useSupabaseSync = () => {
           },
           (payload) => {
             console.log('Credits change received:', payload);
-            // Handle different types of changes
             if (payload.eventType === 'INSERT') {
-              addCredit(payload.new);
+              const newCredit: Omit<Credit, 'id' | 'soldeRestant'> = {
+                montantInitial: payload.new.montant_initial,
+                mensualite: payload.new.mensualite,
+                dateDebut: payload.new.date_debut,
+                dureeEnMois: payload.new.duree_en_mois,
+                nom: payload.new.nom
+              };
+              addCredit(newCredit);
             } else if (payload.eventType === 'DELETE') {
               removeCredit(payload.old.id);
             }
@@ -48,7 +54,14 @@ export const useSupabaseSync = () => {
           (payload) => {
             console.log('Transactions change received:', payload);
             if (payload.eventType === 'INSERT') {
-              addTransaction(payload.new);
+              const newTransaction: Omit<Transaction, 'id'> = {
+                date: payload.new.date,
+                description: payload.new.description,
+                montant: payload.new.montant,
+                categorie: payload.new.categorie,
+                creditId: payload.new.credit_id?.toString()
+              };
+              addTransaction(newTransaction);
             } else if (payload.eventType === 'DELETE') {
               removeTransaction(payload.old.id);
             }
@@ -69,7 +82,13 @@ export const useSupabaseSync = () => {
           (payload) => {
             console.log('Objectives change received:', payload);
             if (payload.eventType === 'INSERT') {
-              addObjective(payload.new);
+              const newObjective: Omit<Objective, 'id'> = {
+                nom: payload.new.nom,
+                montantCible: payload.new.montant_cible,
+                montantActuel: payload.new.montant_actuel,
+                dateObjectif: payload.new.date_objectif
+              };
+              addObjective(newObjective);
             } else if (payload.eventType === 'DELETE') {
               deleteObjective(payload.old.id);
             }
