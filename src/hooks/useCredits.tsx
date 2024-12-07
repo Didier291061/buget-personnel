@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { useTransactions } from './useTransactions';
 import { useBudgetCategories } from './useBudgetCategories';
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Credit {
   id: number;
@@ -21,11 +22,13 @@ export const useCredits = () => {
     const saved = localStorage.getItem('credits');
     return saved ? JSON.parse(saved) : [];
   });
+  const [creditScore, setCreditScore] = useState<number>(750);
+  const [scoreDetails, setScoreDetails] = useState<any>(null);
 
   const calculateRemainingBalance = (credit: Credit) => {
     const creditTransactions = transactions.filter(t => t.creditId === credit.id.toString());
     const totalTransactions = creditTransactions.reduce((acc, curr) => acc + curr.montant, 0);
-    return credit.montantInitial + totalTransactions; // On ajoute car les montants des dépenses sont déjà négatifs
+    return credit.montantInitial + totalTransactions;
   };
 
   // Mise à jour des soldes restants
@@ -43,10 +46,54 @@ export const useCredits = () => {
     console.log('Crédits mis à jour:', credits);
   }, [credits]);
 
+  // Synchronisation avec Supabase
+  const syncCreditScore = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("Utilisateur non authentifié");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('calculate-credit-score', {
+        body: {
+          credits,
+          transactions,
+          userId: user.id
+        }
+      });
+
+      if (error) throw error;
+
+      console.log("Réponse de la fonction de calcul:", data);
+      setCreditScore(data.score);
+      setScoreDetails(data.details);
+
+      toast({
+        title: "Score de crédit mis à jour",
+        description: `Votre nouveau score est de ${data.score}`,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la synchronisation:", error);
+      toast({
+        title: "Erreur de synchronisation",
+        description: "Impossible de mettre à jour le score de crédit",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Synchronisation automatique lors des changements
+  useEffect(() => {
+    syncCreditScore();
+  }, [credits, transactions]);
+
   const addCredit = (credit: Omit<Credit, 'id' | 'soldeRestant'>) => {
     const newId = credits.length > 0 ? Math.max(...credits.map(c => c.id)) + 1 : 1;
     
-    // Ajout automatique d'une catégorie pour le crédit
     const categoryExists = categories.some(cat => cat.name === credit.nom);
     if (!categoryExists) {
       addCategory(credit.nom);
@@ -93,64 +140,13 @@ export const useCredits = () => {
     }));
   };
 
-  const calculateCreditScore = () => {
-    console.log("Début du calcul du score de crédit");
-    let score = 750; // Score de base
-    
-    // Historique de paiement (35% de l'impact)
-    const paiementsEnRetard = transactions.filter(t => 
-      t.creditId && new Date(t.date) > new Date(t.date)
-    ).length;
-    const bonusHistorique = paiementsEnRetard === 0 ? 35 : Math.max(0, 35 - (paiementsEnRetard * 5));
-    console.log("Bonus historique de paiement:", bonusHistorique);
-    score += bonusHistorique;
-
-    // Utilisation du crédit (30% de l'impact)
-    if (credits.length > 0) {
-      const tauxUtilisationMoyen = credits.reduce((acc, credit) => {
-        return acc + (credit.soldeRestant / credit.montantInitial);
-      }, 0) / credits.length;
-      const bonusUtilisation = Math.round((1 - tauxUtilisationMoyen) * 30);
-      console.log("Bonus utilisation du crédit:", bonusUtilisation);
-      score += bonusUtilisation;
-    }
-
-    // Ancienneté des comptes (15% de l'impact)
-    if (credits.length > 0) {
-      const plusAncienCredit = new Date(Math.min(...credits.map(credit => new Date(credit.dateDebut).getTime())));
-      const maintenant = new Date();
-      const moisAnciennete = Math.floor((maintenant.getTime() - plusAncienCredit.getTime()) / (1000 * 60 * 60 * 24 * 30));
-      const bonusAnciennete = Math.min(15, Math.floor(moisAnciennete / 6));
-      console.log("Bonus ancienneté:", bonusAnciennete);
-      score += bonusAnciennete;
-    }
-
-    // Types de crédit (10% de l'impact)
-    const typesUniques = new Set(credits.map(c => c.nom));
-    const bonusDiversite = Math.min(10, typesUniques.size * 2);
-    console.log("Bonus diversité des crédits:", bonusDiversite);
-    score += bonusDiversite;
-
-    // Nouvelles demandes (10% de l'impact)
-    const creditsDerniersMois = credits.filter(credit => {
-      const dateDebut = new Date(credit.dateDebut);
-      const troisMoisAvant = new Date();
-      troisMoisAvant.setMonth(troisMoisAvant.getMonth() - 3);
-      return dateDebut > troisMoisAvant;
-    }).length;
-    const malusNouvellesDemandes = Math.min(10, creditsDerniersMois * 3);
-    console.log("Malus nouvelles demandes:", malusNouvellesDemandes);
-    score -= malusNouvellesDemandes;
-
-    console.log("Score final calculé:", Math.min(850, score));
-    return Math.min(850, score);
-  };
-
   return {
     credits,
     addCredit,
     removeCredit,
     updateCreditBalance,
-    calculateCreditScore
+    creditScore,
+    scoreDetails,
+    syncCreditScore
   };
 };
