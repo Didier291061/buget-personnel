@@ -31,7 +31,6 @@ export const useCredits = () => {
     return credit.montantInitial + totalTransactions;
   };
 
-  // Mise à jour des soldes restants
   useEffect(() => {
     const updatedCredits = credits.map(credit => ({
       ...credit,
@@ -46,7 +45,6 @@ export const useCredits = () => {
     console.log('Crédits mis à jour:', credits);
   }, [credits]);
 
-  // Synchronisation avec Supabase
   const syncCreditScore = async () => {
     try {
       const {
@@ -86,7 +84,6 @@ export const useCredits = () => {
     }
   };
 
-  // Synchronisation automatique lors des changements
   useEffect(() => {
     syncCreditScore();
   }, [credits, transactions]);
@@ -111,6 +108,18 @@ export const useCredits = () => {
       description: `Le crédit "${credit.nom}" a été ajouté avec succès.`
     });
     return newCredit;
+  };
+
+  const updateCredit = (id: number, updatedCredit: Omit<Credit, 'id' | 'soldeRestant'>) => {
+    setCredits(prev => prev.map(credit => 
+      credit.id === id 
+        ? { ...updatedCredit, id, soldeRestant: credit.soldeRestant }
+        : credit
+    ));
+    toast({
+      title: "Crédit mis à jour",
+      description: `Le crédit "${updatedCredit.nom}" a été mis à jour avec succès.`
+    });
   };
 
   const removeCredit = (id: number) => {
@@ -144,6 +153,7 @@ export const useCredits = () => {
     credits,
     addCredit,
     removeCredit,
+    updateCredit,
     updateCreditBalance,
     creditScore,
     scoreDetails,

@@ -7,19 +7,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Download } from "lucide-react";
+import { Trash2, Download, Pencil } from "lucide-react";
 import { Transaction } from "@/hooks/useTransactions";
 import { useState } from "react";
 
 interface TransactionListProps {
   transactions: Transaction[];
   onDeleteTransaction: (id: number) => void;
+  onEditTransaction: (transaction: Transaction) => void;
 }
 
 type SortField = "date" | "montant" | "categorie";
 type SortOrder = "asc" | "desc";
 
-export const TransactionList = ({ transactions, onDeleteTransaction }: TransactionListProps) => {
+export const TransactionList = ({ transactions, onDeleteTransaction, onEditTransaction }: TransactionListProps) => {
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
@@ -164,14 +165,24 @@ export const TransactionList = ({ transactions, onDeleteTransaction }: Transacti
                   })}
                 </TableCell>
                 <TableCell>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => onDeleteTransaction(transaction.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => onEditTransaction(transaction)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => onDeleteTransaction(transaction.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

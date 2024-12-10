@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,9 @@ import { useCredits, Credit } from "@/hooks/useCredits";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 export const CreditManager = () => {
-  const { credits, addCredit, removeCredit } = useCredits();
+  const { credits, addCredit, removeCredit, updateCredit } = useCredits();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingCredit, setEditingCredit] = useState<Credit | null>(null);
   const [newCredit, setNewCredit] = useState({
     nom: "",
     montantInitial: 0,
@@ -24,10 +25,15 @@ export const CreditManager = () => {
     dureeEnMois: 12
   });
 
-  const handleAddCredit = () => {
+  const handleAddOrUpdateCredit = () => {
     if (newCredit.montantInitial > 0 && newCredit.mensualite > 0) {
-      addCredit(newCredit);
+      if (editingCredit) {
+        updateCredit(editingCredit.id, newCredit);
+      } else {
+        addCredit(newCredit);
+      }
       setIsDialogOpen(false);
+      setEditingCredit(null);
       setNewCredit({
         nom: "",
         montantInitial: 0,
@@ -36,6 +42,18 @@ export const CreditManager = () => {
         dureeEnMois: 12
       });
     }
+  };
+
+  const handleEditCredit = (credit: Credit) => {
+    setEditingCredit(credit);
+    setNewCredit({
+      nom: credit.nom,
+      montantInitial: credit.montantInitial,
+      mensualite: credit.mensualite,
+      dateDebut: credit.dateDebut,
+      dureeEnMois: credit.dureeEnMois
+    });
+    setIsDialogOpen(true);
   };
 
   return (
@@ -50,7 +68,9 @@ export const CreditManager = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Ajouter un nouveau crédit</DialogTitle>
+              <DialogTitle>
+                {editingCredit ? "Modifier le crédit" : "Ajouter un nouveau crédit"}
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -92,8 +112,8 @@ export const CreditManager = () => {
                   onChange={(e) => setNewCredit({...newCredit, dureeEnMois: parseInt(e.target.value)})}
                 />
               </div>
-              <Button onClick={handleAddCredit} className="w-full">
-                Ajouter le crédit
+              <Button onClick={handleAddOrUpdateCredit} className="w-full">
+                {editingCredit ? "Modifier le crédit" : "Ajouter le crédit"}
               </Button>
             </div>
           </DialogContent>
@@ -132,14 +152,24 @@ export const CreditManager = () => {
                 <TableCell>{new Date(credit.dateDebut).toLocaleDateString()}</TableCell>
                 <TableCell>{credit.dureeEnMois} mois</TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeCredit(credit.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditCredit(credit)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeCredit(credit.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
