@@ -9,7 +9,7 @@ import { NewTransactionDialog } from "./transactions/NewTransactionDialog";
 import { TransactionTimeView } from "./transactions/TransactionTimeView";
 
 const TransactionsPanel = () => {
-  const { transactions, addTransaction, removeTransaction } = useTransactions();
+  const { transactions, addTransaction, removeTransaction, updateTransaction } = useTransactions();
   const { credits, updateCreditBalance } = useCredits();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,6 +29,13 @@ const TransactionsPanel = () => {
     setIsDialogOpen(false);
   };
 
+  const handleEditTransaction = (transaction: any) => {
+    updateTransaction(transaction.id, transaction);
+    if (transaction.creditId) {
+      updateCreditBalance(parseInt(transaction.creditId), transaction.montant);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <TransactionSummary />
@@ -45,6 +52,7 @@ const TransactionsPanel = () => {
         <TransactionList 
           transactions={filteredTransactions}
           onDeleteTransaction={removeTransaction}
+          onEditTransaction={handleEditTransaction}
         />
 
         <NewTransactionDialog 

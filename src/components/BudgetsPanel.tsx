@@ -78,6 +78,14 @@ const BudgetsPanel = () => {
     });
   };
 
+  const editBudget = (budget: Budget) => {
+    setBudgets(budgets.map(b => b.id === budget.id ? budget : b));
+    toast({
+      title: "Budget modifié",
+      description: "Le budget a été modifié avec succès."
+    });
+  };
+
   const pieData = budgets.map((budget) => ({
     name: budget.categorie,
     value: budget.montantPrevu,
@@ -137,7 +145,11 @@ const BudgetsPanel = () => {
           </Dialog>
         </div>
 
-        <BudgetTable budgets={budgets} onDeleteBudget={deleteBudget} />
+        <BudgetTable 
+          budgets={budgets} 
+          onDeleteBudget={deleteBudget}
+          onEditBudget={editBudget}
+        />
       </Card>
     </div>
   );
