@@ -77,6 +77,30 @@ export const TransactionList = ({
     setEditingTransaction(null);
   };
 
+  const exportTransactions = () => {
+    const data = sortedAndFilteredTransactions.map(t => ({
+      date: t.date,
+      description: t.description,
+      montant: t.montant,
+      categorie: t.categorie,
+      type: t.montant >= 0 ? "Revenu" : "Dépense"
+    }));
+    
+    const csvContent = "data:text/csv;charset=utf-8," + 
+      "Date,Description,Type,Catégorie,Montant\n" +
+      data.map(row => 
+        `${row.date},${row.description},${row.type},${row.categorie},${row.montant}`
+      ).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `transactions${selectedMonth !== "all" ? `-${selectedMonth}` : ""}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-4">
       <TransactionFilters 
@@ -87,6 +111,7 @@ export const TransactionList = ({
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
         monthOptions={getMonthOptions()}
+        onExport={exportTransactions}
       />
 
       <TransactionTable 
