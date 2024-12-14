@@ -66,28 +66,15 @@ export const TransactionList = ({
     return Array.from(months).sort().reverse();
   };
 
-  const exportTransactions = () => {
-    const data = sortedAndFilteredTransactions.map(t => ({
-      date: t.date,
-      description: t.description,
-      montant: t.montant,
-      categorie: t.categorie,
-      type: t.montant >= 0 ? "Revenu" : "Dépense"
-    }));
-    
-    const csvContent = "data:text/csv;charset=utf-8," + 
-      "Date,Description,Type,Catégorie,Montant\n" +
-      data.map(row => 
-        `${row.date},${row.description},${row.type},${row.categorie},${row.montant}`
-      ).join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `transactions${selectedMonth !== "all" ? `-${selectedMonth}` : ""}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleEditClick = (transaction: Transaction) => {
+    console.log("Editing transaction:", transaction);
+    setEditingTransaction(transaction);
+  };
+
+  const handleEditTransaction = (transaction: Transaction) => {
+    console.log("Saving edited transaction:", transaction);
+    onEditTransaction(transaction);
+    setEditingTransaction(null);
   };
 
   return (
@@ -100,13 +87,12 @@ export const TransactionList = ({
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
         monthOptions={getMonthOptions()}
-        onExport={exportTransactions}
       />
 
       <TransactionTable 
         transactions={sortedAndFilteredTransactions}
         onDelete={onDeleteTransaction}
-        onEdit={setEditingTransaction}
+        onEdit={handleEditClick}
       />
 
       {editingTransaction && (
@@ -114,7 +100,7 @@ export const TransactionList = ({
           isOpen={!!editingTransaction}
           onOpenChange={(open) => !open && setEditingTransaction(null)}
           transaction={editingTransaction}
-          onEditTransaction={onEditTransaction}
+          onEditTransaction={handleEditTransaction}
           credits={credits}
         />
       )}

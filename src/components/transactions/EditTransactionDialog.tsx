@@ -22,10 +22,11 @@ export const EditTransactionDialog = ({
   credits,
 }: EditTransactionDialogProps) => {
   const { categories } = useBudgetCategories();
-  const [editedTransaction, setEditedTransaction] = useState(transaction);
+  const [editedTransaction, setEditedTransaction] = useState<Transaction>(transaction);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting edited transaction:", editedTransaction);
     onEditTransaction(editedTransaction);
     onOpenChange(false);
   };
@@ -117,7 +118,7 @@ export const EditTransactionDialog = ({
           <div className="space-y-2">
             <label className="text-sm font-medium">Crédit associé</label>
             <Select
-              value={editedTransaction.creditId || ""}
+              value={editedTransaction.creditId?.toString() || ""}
               onValueChange={(value) =>
                 setEditedTransaction({ ...editedTransaction, creditId: value })
               }
