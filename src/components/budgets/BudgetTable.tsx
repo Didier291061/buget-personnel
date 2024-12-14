@@ -9,6 +9,8 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Trash2, Pencil } from "lucide-react";
+import { useState } from "react";
+import { EditBudgetDialog } from "./EditBudgetDialog";
 
 interface Budget {
   id: number;
@@ -24,6 +26,8 @@ interface BudgetTableProps {
 }
 
 export const BudgetTable = ({ budgets, onDeleteBudget, onEditBudget }: BudgetTableProps) => {
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -71,7 +75,7 @@ export const BudgetTable = ({ budgets, onDeleteBudget, onEditBudget }: BudgetTab
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => onEditBudget(budget)}
+                    onClick={() => setEditingBudget(budget)}
                     className="text-blue-500 hover:text-blue-700"
                   >
                     <Pencil className="h-4 w-4" />
@@ -90,6 +94,15 @@ export const BudgetTable = ({ budgets, onDeleteBudget, onEditBudget }: BudgetTab
           ))}
         </TableBody>
       </Table>
+
+      {editingBudget && (
+        <EditBudgetDialog
+          isOpen={!!editingBudget}
+          onOpenChange={(open) => !open && setEditingBudget(null)}
+          budget={editingBudget}
+          onEditBudget={onEditBudget}
+        />
+      )}
     </div>
   );
 };

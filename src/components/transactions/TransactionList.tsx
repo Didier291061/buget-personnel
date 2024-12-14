@@ -10,6 +10,8 @@ import {
 import { Trash2, Download, Pencil } from "lucide-react";
 import { Transaction } from "@/hooks/useTransactions";
 import { useState } from "react";
+import { EditTransactionDialog } from "./EditTransactionDialog";
+import { useCredits } from "@/hooks/useCredits";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -24,6 +26,8 @@ export const TransactionList = ({ transactions, onDeleteTransaction, onEditTrans
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const { credits } = useCredits();
 
   const sortedAndFilteredTransactions = transactions
     .filter(transaction => {
@@ -169,7 +173,7 @@ export const TransactionList = ({ transactions, onDeleteTransaction, onEditTrans
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      onClick={() => onEditTransaction(transaction)}
+                      onClick={() => setEditingTransaction(transaction)}
                       className="text-blue-500 hover:text-blue-700"
                     >
                       <Pencil className="h-4 w-4" />
@@ -189,6 +193,16 @@ export const TransactionList = ({ transactions, onDeleteTransaction, onEditTrans
           </TableBody>
         </Table>
       </div>
+
+      {editingTransaction && (
+        <EditTransactionDialog
+          isOpen={!!editingTransaction}
+          onOpenChange={(open) => !open && setEditingTransaction(null)}
+          transaction={editingTransaction}
+          onEditTransaction={onEditTransaction}
+          credits={credits}
+        />
+      )}
     </div>
   );
 };
