@@ -87,7 +87,7 @@ export const EditTransactionDialog = ({
               }
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Sélectionner le type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="revenu">Revenu</SelectItem>
@@ -104,7 +104,7 @@ export const EditTransactionDialog = ({
               }
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Sélectionner une catégorie" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (

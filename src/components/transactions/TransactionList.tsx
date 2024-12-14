@@ -1,17 +1,7 @@
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Trash2, Download, Pencil } from "lucide-react";
-import { Transaction } from "@/hooks/useTransactions";
 import { useState } from "react";
-import { EditTransactionDialog } from "./EditTransactionDialog";
+import { Transaction } from "@/hooks/useTransactions";
 import { useCredits } from "@/hooks/useCredits";
+import { EditTransactionDialog } from "./EditTransactionDialog";
 import { TransactionFilters } from "./TransactionFilters";
 import { TransactionTable } from "./TransactionTable";
 
