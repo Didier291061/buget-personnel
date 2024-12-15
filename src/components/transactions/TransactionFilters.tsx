@@ -30,10 +30,10 @@ export const TransactionFilters = ({
   onExport
 }: TransactionFiltersProps) => {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-between">
-      <div className="flex gap-4">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="grid grid-cols-1 sm:flex gap-2 sm:gap-4 w-full sm:w-auto">
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Sélectionner un mois" />
           </SelectTrigger>
           <SelectContent>
@@ -50,7 +50,7 @@ export const TransactionFilters = ({
         </Select>
 
         <Select value={sortField} onValueChange={(value: "date" | "montant" | "categorie") => setSortField(value)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Trier par" />
           </SelectTrigger>
           <SelectContent>
@@ -61,7 +61,7 @@ export const TransactionFilters = ({
         </Select>
 
         <Select value={sortOrder} onValueChange={(value: "asc" | "desc") => setSortOrder(value)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Ordre" />
           </SelectTrigger>
           <SelectContent>
@@ -71,7 +71,7 @@ export const TransactionFilters = ({
         </Select>
       </div>
 
-      <Button variant="outline" onClick={onExport}>
+      <Button variant="outline" onClick={onExport} className="w-full sm:w-auto">
         <Download className="mr-2 h-4 w-4" />
         Exporter
       </Button>
