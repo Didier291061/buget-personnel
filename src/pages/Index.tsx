@@ -22,28 +22,46 @@ const Index = () => {
         
         <Tabs defaultValue="transactions" className="space-y-4">
           <div className="sticky top-0 z-50 bg-gray-50 pb-2">
-            <TabsList className={`grid w-full ${isMobile ? 'grid-cols-3 gap-1' : 'grid-cols-6'}`}>
-              <TabsTrigger value="transactions" className="space-x-2">
+            <TabsList className="grid w-full grid-cols-3 gap-1 sm:grid-cols-6 p-1 h-auto min-h-[2.5rem] sm:h-10">
+              <TabsTrigger 
+                value="transactions" 
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <DollarSign className="h-4 w-4" />
                 <span className="hidden sm:inline">Transactions</span>
               </TabsTrigger>
-              <TabsTrigger value="budgets" className="space-x-2">
+              <TabsTrigger 
+                value="budgets"
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <BarChart className="h-4 w-4" />
                 <span className="hidden sm:inline">Budgets</span>
               </TabsTrigger>
-              <TabsTrigger value="objectives" className="space-x-2">
+              <TabsTrigger 
+                value="objectives"
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <Target className="h-4 w-4" />
                 <span className="hidden sm:inline">Objectifs</span>
               </TabsTrigger>
-              <TabsTrigger value="credit" className="space-x-2">
+              <TabsTrigger 
+                value="credit"
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <CreditCard className="h-4 w-4" />
                 <span className="hidden sm:inline">Crédit</span>
               </TabsTrigger>
-              <TabsTrigger value="investments" className="space-x-2">
+              <TabsTrigger 
+                value="investments"
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <TrendingUp className="h-4 w-4" />
                 <span className="hidden sm:inline">Investissements</span>
               </TabsTrigger>
-              <TabsTrigger value="settings" className="space-x-2">
+              <TabsTrigger 
+                value="settings"
+                className="flex items-center justify-center gap-2 py-2 px-2 sm:px-4 h-auto min-h-[2.5rem]"
+              >
                 <Settings className="h-4 w-4" />
                 <span className="hidden sm:inline">Paramètres</span>
               </TabsTrigger>
