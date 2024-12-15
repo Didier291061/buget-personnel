@@ -82,24 +82,35 @@ export const TransactionTimeView = () => {
 
   return (
     <Card className="p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex gap-2">
+      <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
           <Button
             variant={viewType === "monthly" ? "default" : "outline"}
             onClick={() => setViewType("monthly")}
+            className="text-sm px-2 sm:px-4"
+            size="sm"
           >
-            Vue Mensuelle
+            <span className="sm:hidden">Mensuel</span>
+            <span className="hidden sm:inline">Vue Mensuelle</span>
           </Button>
           <Button
             variant={viewType === "yearly" ? "default" : "outline"}
             onClick={() => setViewType("yearly")}
+            className="text-sm px-2 sm:px-4"
+            size="sm"
           >
-            Vue Annuelle
+            <span className="sm:hidden">Annuel</span>
+            <span className="hidden sm:inline">Vue Annuelle</span>
           </Button>
         </div>
-        <Button variant="outline" onClick={exportData}>
-          <Download className="mr-2 h-4 w-4" />
-          Exporter
+        <Button 
+          variant="outline" 
+          onClick={exportData}
+          className="text-sm px-2 sm:px-4"
+          size="sm"
+        >
+          <Download className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Exporter</span>
         </Button>
       </div>
 
