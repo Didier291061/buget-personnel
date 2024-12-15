@@ -118,16 +118,19 @@ export const EditTransactionDialog = ({
           <div className="space-y-2">
             <label className="text-sm font-medium">Crédit associé</label>
             <Select
-              value={editedTransaction.creditId?.toString() || ""}
+              value={editedTransaction.creditId?.toString() || "none"}
               onValueChange={(value) =>
-                setEditedTransaction({ ...editedTransaction, creditId: value })
+                setEditedTransaction({ 
+                  ...editedTransaction, 
+                  creditId: value === "none" ? "" : value 
+                })
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Aucun crédit" />
+                <SelectValue placeholder="Sélectionner un crédit" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Aucun crédit</SelectItem>
+                <SelectItem value="none">Aucun crédit</SelectItem>
                 {credits.map((credit) => (
                   <SelectItem key={credit.id} value={credit.id.toString()}>
                     {credit.nom}
