@@ -93,9 +93,35 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  input, button, a {
+    @apply touch-manipulation;
+  }
+
+  /* Améliorer la lisibilité sur mobile */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Désactiver le zoom sur les inputs iOS */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"] {
+    @apply text-base;
+  }
+
+  /* Améliorer le défilement */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 }
