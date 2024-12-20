@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useTransactions } from "@/hooks/useTransactions";
-import { useCredits } from "@/hooks/useCredits";
 import { TransactionSummary } from "./transactions/TransactionSummary";
 import { TransactionSearch } from "./transactions/TransactionSearch";
 import { TransactionList } from "./transactions/TransactionList";
@@ -11,7 +10,6 @@ import { PrintButton } from "./ui/print-button";
 
 const TransactionsPanel = () => {
   const { transactions, addTransaction, removeTransaction, updateTransaction } = useTransactions();
-  const { credits, updateCreditBalance } = useCredits();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -19,23 +17,6 @@ const TransactionsPanel = () => {
     transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     transaction.categorie.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handleAddTransaction = (newTransaction: any) => {
-    const transaction = addTransaction(newTransaction);
-
-    if (newTransaction.creditId) {
-      updateCreditBalance(parseInt(newTransaction.creditId), newTransaction.montant);
-    }
-
-    setIsDialogOpen(false);
-  };
-
-  const handleEditTransaction = (transaction: any) => {
-    updateTransaction(transaction.id, transaction);
-    if (transaction.creditId) {
-      updateCreditBalance(parseInt(transaction.creditId), transaction.montant);
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -58,14 +39,13 @@ const TransactionsPanel = () => {
         <TransactionList 
           transactions={filteredTransactions}
           onDeleteTransaction={removeTransaction}
-          onEditTransaction={handleEditTransaction}
+          onEditTransaction={updateTransaction}
         />
 
         <NewTransactionDialog 
           isOpen={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          onAddTransaction={handleAddTransaction}
-          credits={credits}
+          onAddTransaction={addTransaction}
         />
       </Card>
     </div>

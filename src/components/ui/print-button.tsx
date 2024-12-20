@@ -1,37 +1,31 @@
-import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PrintButtonProps {
   title?: string;
 }
 
 export const PrintButton = ({ title = "Imprimer" }: PrintButtonProps) => {
+  const { toast } = useToast();
+
   const handlePrint = () => {
-    try {
-      window.print();
-      toast({
-        title: "Impression lancée",
-        description: "La fenêtre d'impression va s'ouvrir."
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur d'impression",
-        description: "Une erreur est survenue lors de l'impression.",
-        variant: "destructive"
-      });
-    }
+    toast({
+      title: "Impression en cours",
+      description: "La fenêtre d'impression va s'ouvrir."
+    });
+    window.print();
   };
 
   return (
     <Button
       variant="outline"
-      size="icon"
+      size="sm"
       onClick={handlePrint}
-      className="hover:bg-blue-100 hover:text-blue-600 transition-colors print:hidden"
-      title={title}
+      className="print:hidden"
     >
-      <Printer className="h-4 w-4" />
+      <Printer className="h-4 w-4 mr-2" />
+      {title}
     </Button>
   );
 };
