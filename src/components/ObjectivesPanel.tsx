@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useObjectives } from "@/hooks/useObjectives";
+import { PrintButton } from "./ui/print-button";
 
 const ObjectivesPanel = () => {
   const { objectives, addObjective, updateObjective, deleteObjective } = useObjectives();
@@ -78,6 +79,11 @@ const ObjectivesPanel = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Objectifs</h2>
+        <PrintButton title="Imprimer les objectifs" />
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-4">
           <h3 className="mb-4 text-lg font-semibold">Objectifs en cours</h3>

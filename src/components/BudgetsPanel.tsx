@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { PrintButton } from "./ui/print-button";
 
 interface Budget {
   id: number;
@@ -45,7 +46,6 @@ const BudgetsPanel = () => {
   }, [budgets]);
 
   useEffect(() => {
-    // Mettre à jour les montants dépensés en fonction des transactions
     const updatedBudgets = budgets.map(budget => {
       const categoryTransactions = getTransactionsByCategory(budget.categorie);
       const totalSpent = categoryTransactions.reduce((sum, t) => sum + t.montant, 0);
@@ -93,6 +93,11 @@ const BudgetsPanel = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Budgets</h2>
+        <PrintButton title="Imprimer les budgets" />
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2">
         <BudgetChart data={pieData} />
         <div className="space-y-4">

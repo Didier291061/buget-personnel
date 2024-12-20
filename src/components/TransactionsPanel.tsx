@@ -7,6 +7,7 @@ import { TransactionSearch } from "./transactions/TransactionSearch";
 import { TransactionList } from "./transactions/TransactionList";
 import { NewTransactionDialog } from "./transactions/NewTransactionDialog";
 import { TransactionTimeView } from "./transactions/TransactionTimeView";
+import { PrintButton } from "./ui/print-button";
 
 const TransactionsPanel = () => {
   const { transactions, addTransaction, removeTransaction, updateTransaction } = useTransactions();
@@ -38,6 +39,11 @@ const TransactionsPanel = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Transactions</h2>
+        <PrintButton title="Imprimer les transactions" />
+      </div>
+      
       <TransactionSummary />
       
       <TransactionTimeView />

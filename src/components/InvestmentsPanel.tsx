@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { PrintButton } from "./ui/print-button";
 
 interface Investment {
   id: number;
@@ -108,6 +109,11 @@ const InvestmentsPanel = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Investissements</h2>
+        <PrintButton title="Imprimer le rapport d'investissements" />
+      </div>
+
       <InvestmentStats investments={investments} />
 
       <div className="grid gap-4 md:grid-cols-2">
