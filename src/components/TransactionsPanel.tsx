@@ -7,9 +7,11 @@ import { TransactionList } from "./transactions/TransactionList";
 import { NewTransactionDialog } from "./transactions/NewTransactionDialog";
 import { TransactionTimeView } from "./transactions/TransactionTimeView";
 import { PrintButton } from "./ui/print-button";
+import { useCredits } from "@/hooks/useCredits";
 
 const TransactionsPanel = () => {
   const { transactions, addTransaction, removeTransaction, updateTransaction } = useTransactions();
+  const { credits } = useCredits();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -17,6 +19,10 @@ const TransactionsPanel = () => {
     transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     transaction.categorie.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleEditTransaction = (transaction: Transaction) => {
+    updateTransaction(transaction.id, transaction);
+  };
 
   return (
     <div className="space-y-4">
@@ -39,13 +45,14 @@ const TransactionsPanel = () => {
         <TransactionList 
           transactions={filteredTransactions}
           onDeleteTransaction={removeTransaction}
-          onEditTransaction={updateTransaction}
+          onEditTransaction={handleEditTransaction}
         />
 
         <NewTransactionDialog 
           isOpen={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onAddTransaction={addTransaction}
+          credits={credits}
         />
       </Card>
     </div>
