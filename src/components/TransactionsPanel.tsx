@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { useTransactions } from "@/hooks/useTransactions";
+import { useTransactions, Transaction } from "@/hooks/useTransactions";
 import { TransactionSummary } from "./transactions/TransactionSummary";
 import { TransactionSearch } from "./transactions/TransactionSearch";
 import { TransactionList } from "./transactions/TransactionList";
