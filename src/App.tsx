@@ -5,25 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useSupabaseSync } from "./hooks/useSupabaseSync";
 import Index from "./pages/Index";
-import AuthPage from "./pages/Auth";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  useSupabaseSync();
+  useSupabaseSync(); // Use the sync hook here
   
   return (
     <Routes>
-      <Route path="/auth" element={<AuthPage />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Index />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/" element={<Index />} />
     </Routes>
   );
 };
