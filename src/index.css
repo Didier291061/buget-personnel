@@ -4,7 +4,7 @@
  
 @layer base {
   :root {
-    --background: 240 30% 98%; /* Nouvelle couleur de fond légèrement bleutée */
+    --background: 240 40% 96%; /* Couleur de fond bleutée plus prononcée */
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
