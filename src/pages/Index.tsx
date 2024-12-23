@@ -14,14 +14,14 @@ const Index = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background/50">
       <div className="mx-auto max-w-7xl p-2 sm:p-4 md:p-8">
         <h1 className="mb-4 sm:mb-8 text-2xl sm:text-3xl font-bold text-gray-900 px-2">
           Tableau de Bord
         </h1>
         
         <Tabs defaultValue="transactions" className="space-y-4">
-          <div className="sticky top-0 z-50 bg-gray-50 pb-2">
+          <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-2">
             <TabsList className="grid w-full grid-cols-3 gap-1 sm:grid-cols-6 p-1 h-auto min-h-[2.5rem] sm:h-10">
               <TabsTrigger 
                 value="transactions" 
